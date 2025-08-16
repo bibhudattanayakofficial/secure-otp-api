@@ -1,0 +1,697 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SecureOTPAPI - OpenAPI Specification 3.0",
+    "version": "1.0.0",
+    "description": "# SecureOTPAPI\n  The **Secure OTP API** provides secure endpoints to generate and verify One-Time Passwords (OTPs).\n  OTPs are widely used for two-factor authentication (2FA), password resets, and transaction verification.\n  This API ensures secure delivery of OTPs via the preferred communication channel (e.g., email, SMS)\n  and robust verification mechanisms.\n\n  **Key Features:**\n  - Generate a time-bound OTP tied to a unique reference ID.\n  - Send OTP to the user's registered channel.\n  - Verify OTP validity, expiration, and correctness.\n  - Configurable OTP length and validity duration.\n  ",
+    "termsOfService": "https://secureotp.com/otp/terms/",
+    "contact": {
+      "email": "support@secureotp.com"
+    },
+    "license": {
+      "name": "SecureOTPAPI 1.0",
+      "url": "https://secureotp.com/otp/licenses/LICENSE-1.0.html"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about SecureOTP",
+    "url": "https://secureotp.com/otp/"
+  },
+  "servers": [
+    {
+      "url": "https://secureotp.com/otpgeneratorapi/v1",
+      "description": "SecureOTPAPI API"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Generate",
+      "description": "Operation about Generate OTP",
+      "externalDocs": {
+        "description": "Find out more about generate otp",
+        "url": "https://secureotp.com/otp/docs/generate-otp"
+      }
+    },
+    {
+      "name": "Verify",
+      "description": "Operation about Verify OTP",
+      "externalDocs": {
+        "description": "Find out more about verify otp",
+        "url": "https://secureotp.com/otp/docs/verify-otp"
+      }
+    }
+  ],
+  "paths": {
+    "/otp/generate": {
+      "post": {
+        "tags": [
+          "Generate"
+        ],
+        "summary": "Generate OTP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateOTPRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOTPResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOTPErrorResponse"
+                },
+                "examples": {
+                  "Bad-Request": {
+                    "value": {
+                      "generateOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC900",
+                          "respMessage": "Fail"
+                        },
+                        "otpErrorResponse": {
+                          "code": "400",
+                          "message": "Bad Request",
+                          "details": "Request content are bad."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOTPErrorResponse"
+                },
+                "examples": {
+                  "Unauthorization": {
+                    "value": {
+                      "generateOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC901",
+                          "respMessage": "Fail"
+                        },
+                        "otpErrorResponse": {
+                          "code": "401",
+                          "message": "Authentication Failed.",
+                          "details": "Email or password is incorrect."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOTPErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "value": {
+                      "generateOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC902",
+                          "respMessage": "Fail"
+                        },
+                        "otpErrorResponse": {
+                          "code": "403",
+                          "message": "Forbidden.",
+                          "details": "Forbidden."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOTPErrorResponse"
+                },
+                "examples": {
+                  "Not-Found": {
+                    "value": {
+                      "generateOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC903",
+                          "respMessage": "Fail"
+                        },
+                        "otpErrorResponse": {
+                          "code": "404",
+                          "message": "Resource not found..",
+                          "details": "Requested resource not found."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOTPErrorResponse"
+                },
+                "examples": {
+                  "Timeout": {
+                    "value": {
+                      "generateOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC904",
+                          "respMessage": "Fail"
+                        },
+                        "otpErrorResponse": {
+                          "code": "408",
+                          "message": "Resource Timeout.",
+                          "details": "Resource Timeout"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOTPErrorResponse"
+                },
+                "examples": {
+                  "Server-Error": {
+                    "value": {
+                      "generateOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC905",
+                          "respMessage": "Fail"
+                        },
+                        "otpErrorResponse": {
+                          "code": "500",
+                          "message": "Server Error.",
+                          "details": "Internal Server Error."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOTPErrorResponse"
+                },
+                "examples": {
+                  "Server-Unavailable": {
+                    "value": {
+                      "generateOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC906",
+                          "respMessage": "Fail"
+                        },
+                        "otpErrorResponse": {
+                          "code": "503",
+                          "message": "Server Unavailable.",
+                          "details": "Server Unavailable."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/otp/verify": {
+      "post": {
+        "tags": [
+          "Verify"
+        ],
+        "summary": "Generate OTP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOTPRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOTPResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOTPRequest"
+                },
+                "examples": {
+                  "Bad-Request": {
+                    "value": {
+                      "verifyOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC900",
+                          "respMessage": "Fail"
+                        },
+                        "verifyErrorResponse": {
+                          "code": "400",
+                          "message": "Bad Request",
+                          "details": "Request content are bad."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOTPErrorResponse"
+                },
+                "examples": {
+                  "Unauthorization": {
+                    "value": {
+                      "verifyOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC901",
+                          "respMessage": "Fail"
+                        },
+                        "verifyErrorResponse": {
+                          "code": "401",
+                          "message": "Authentication Failed.",
+                          "details": "Email or password is incorrect."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOTPErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "value": {
+                      "verifyOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC902",
+                          "respMessage": "Fail"
+                        },
+                        "verifyErrorResponse": {
+                          "code": "403",
+                          "message": "Forbidden.",
+                          "details": "Forbidden."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOTPErrorResponse"
+                },
+                "examples": {
+                  "Not-Found": {
+                    "value": {
+                      "verifyOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC903",
+                          "respMessage": "Fail"
+                        },
+                        "verifyErrorResponse": {
+                          "code": "404",
+                          "message": "Resource not found..",
+                          "details": "Requested resource not found."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOTPErrorResponse"
+                },
+                "examples": {
+                  "Timeout": {
+                    "value": {
+                      "verifyOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC904",
+                          "respMessage": "Fail"
+                        },
+                        "verifyErrorResponse": {
+                          "code": "408",
+                          "message": "Resource Timeout.",
+                          "details": "Resource Timeout"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOTPErrorResponse"
+                },
+                "examples": {
+                  "Server-Error": {
+                    "value": {
+                      "verifyOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC905",
+                          "respMessage": "Fail"
+                        },
+                        "verifyErrorResponse": {
+                          "code": "500",
+                          "message": "Server Error.",
+                          "details": "Internal Server Error."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOTPErrorResponse"
+                },
+                "examples": {
+                  "Server-Unavailable": {
+                    "value": {
+                      "verifyOTPResponse": {
+                        "apiResponse": {
+                          "respCode": "CC906",
+                          "respMessage": "Fail"
+                        },
+                        "verifyErrorResponse": {
+                          "code": "503",
+                          "message": "Server Unavailable.",
+                          "details": "Server Unavailable."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "respCode": {
+            "type": "string",
+            "example": "CC100"
+          },
+          "respMessage": {
+            "type": "string",
+            "example": "Success."
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "integer",
+            "example": 400
+          },
+          "errorMessage": {
+            "type": "string",
+            "example": "Bad Request."
+          },
+          "errorDetails": {
+            "type": "string",
+            "example": "Content in request are invalid."
+          }
+        }
+      },
+      "GenerateOTPRequest": {
+        "type": "object",
+        "properties": {
+          "generateOTPRequest": {
+            "type": "object",
+            "properties": {
+              "otpDetails": {
+                "type": "object",
+                "properties": {
+                  "clientID": {
+                    "type": "string",
+                    "example": "CL1000001"
+                  },
+                  "userID": {
+                    "type": "string",
+                    "example": "CID0000000001"
+                  },
+                  "channel": {
+                    "type": "string",
+                    "description": "The delivery channel for OTP.",
+                    "enum": [
+                      "sms",
+                      "email",
+                      "sms-mail"
+                    ],
+                    "default": "sms"
+                  },
+                  "mobileNo": {
+                    "type": "string",
+                    "description": "Phone number to which the OTP will be sent.",
+                    "example": "+15551234567"
+                  },
+                  "emailID": {
+                    "type": "string",
+                    "description": "Email ID to which the OTP will be sent.",
+                    "example": "+15551234567"
+                  },
+                  "otpLength": {
+                    "type": "integer",
+                    "description": "Length of OTP (default is 6 digits).",
+                    "example": 6
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "GenerateOTPResponse": {
+        "type": "object",
+        "properties": {
+          "generateOTPResponse": {
+            "type": "object",
+            "properties": {
+              "apiResponse": {
+                "$ref": "#/components/schemas/ApiResponse"
+              },
+              "otpResponse": {
+                "type": "object",
+                "properties": {
+                  "uiqueRefID": {
+                    "type": "string",
+                    "example": "1001"
+                  },
+                  "generatedOTP": {
+                    "type": "string",
+                    "example": "bsg096"
+                  },
+                  "expiresIn": {
+                    "type": "integer",
+                    "description": "OTP expiry duration in seconds.",
+                    "example": "3600"
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "OTP has been sent successfully."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "GenerateOTPErrorResponse": {
+        "type": "object",
+        "properties": {
+          "generateOTPResponse": {
+            "type": "object",
+            "properties": {
+              "apiResponse": {
+                "$ref": "#/components/schemas/ApiResponse"
+              },
+              "otpErrorResponse": {
+                "$ref": "#/components/schemas/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "VerifyOTPRequest": {
+        "type": "object",
+        "properties": {
+          "verifyOTPRequest": {
+            "type": "object",
+            "properties": {
+              "clientID": {
+                "type": "string",
+                "example": "CL1000001"
+              },
+              "userID": {
+                "type": "string",
+                "example": "CID0000000001"
+              },
+              "uiqueRefID": {
+                "type": "string",
+                "example": "1001"
+              },
+              "generatedOTP": {
+                "type": "string",
+                "example": "bsg096"
+              }
+            }
+          }
+        }
+      },
+      "VerifyOTPResponse": {
+        "type": "object",
+        "properties": {
+          "verifyOTPResponse": {
+            "type": "object",
+            "properties": {
+              "apiResponse": {
+                "$ref": "#/components/schemas/ApiResponse"
+              },
+              "verifyResponse": {
+                "type": "object",
+                "properties": {
+                  "verified": {
+                    "type": "boolean",
+                    "description": "Whether the OTP was successfully verified."
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "OTP verified successfully."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "VerifyOTPErrorResponse": {
+        "type": "object",
+        "properties": {
+          "verifyOTPResponse": {
+            "type": "object",
+            "properties": {
+              "apiResponse": {
+                "$ref": "#/components/schemas/ApiResponse"
+              },
+              "otpErrorResponse": {
+                "$ref": "#/components/schemas/ErrorResponse"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
